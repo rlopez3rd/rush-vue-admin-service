@@ -14,7 +14,7 @@ const breadCrumbs = ref([
   },
   {
     title: 'Employee Dashboard',
-    to: '/employe-dashboard',
+    to: '/employee-dashboard',
   },
 ])
 
