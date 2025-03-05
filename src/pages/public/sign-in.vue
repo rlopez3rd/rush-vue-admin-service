@@ -4,7 +4,7 @@ import { useAuthStore } from '@/stores/auth'
 import { useRouter, useRoute } from 'vue-router'
 
 import { useVuelidate } from '@vuelidate/core'
-import { required, email, numeric, helpers } from '@vuelidate/validators'
+import { required } from '@vuelidate/validators'
 
 interface UserForm {
   username: string
@@ -30,7 +30,6 @@ const rules = reactive({
 const v$ = useVuelidate(rules, formData)
 
 const handleSubmit = async (e: any) => {
-  // e.prevent.default()
   const result = await v$.value.$validate()
 
   if (result) {
@@ -46,7 +45,7 @@ const handleSubmit = async (e: any) => {
         router.push({ name: 'employee-dashboard' })
       }
     } catch (error: any) {
-      showNotification(error?.response?.data.message, 'error')
+      showNotification(error?.response.data.message, 'error')
     }
   }
 }

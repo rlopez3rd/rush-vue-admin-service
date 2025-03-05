@@ -27,21 +27,17 @@ export const useAuthStore = defineStore(
     const authorization = ref<Partial<Authorization>>({})
 
     const signIn = async (payload: any) => {
-      try {
-        const response = await api.post('/auth/sign-in', payload)
+      const response = await api.post('/auth/sign-in', payload)
 
-        if (response.status === 200) {
-          user.value = response.data.result.user
-          authorization.value = response.data.result.authorization
+      if (response.status === 200) {
+        user.value = response.data.result.user
+        authorization.value = response.data.result.authorization
 
-          localStorage.setItem('user', JSON.stringify(user.value))
-          localStorage.setItem('authorization', JSON.stringify(authorization.value))
-        }
-
-        return response
-      } catch (e) {
-        console.log(e)
+        localStorage.setItem('user', JSON.stringify(user.value))
+        localStorage.setItem('authorization', JSON.stringify(authorization.value))
       }
+
+      return response
     }
 
     const logout = async () => {
