@@ -2,6 +2,7 @@
 import { inject, reactive, ref } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { useRouter, useRoute } from 'vue-router'
+import api from '@/api/api'
 
 import { useVuelidate } from '@vuelidate/core'
 import { required } from '@vuelidate/validators'
@@ -34,15 +35,16 @@ const handleSubmit = async (e: any) => {
 
   if (result) {
     try {
-      const response = await authStore.signIn(formData)
+      const response = await api.post('/auth/sign-in', formData)
 
-      const { user } = response?.data.result
-      if (user.roles?.includes('Admin')) {
-        if (response?.status === 200) {
+      if (response?.status === 200) {
+        const { result } = response?.data
+        authStore.signIn(result)
+        if (result.user.roles?.includes('Admin')) {
           router.push({ name: 'user-maintenance' })
+        } else {
+          router.push({ name: 'employee-dashboard' })
         }
-      } else {
-        router.push({ name: 'employee-dashboard' })
       }
     } catch (error: any) {
       showNotification(error?.response.data.message, 'error')

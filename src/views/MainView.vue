@@ -4,6 +4,8 @@ import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { storeToRefs } from 'pinia'
 
+import api from '@/api/api'
+
 interface NavigationLinks {
   title: string
   name: string
@@ -52,9 +54,15 @@ const routeTo = (name: string) => {
 }
 
 const logout = async () => {
-  const response = await authStore.logout()
-  if (response?.status === 200) {
-    routeTo('sign-in')
+  try {
+    const response = await api.get('/auth/logout')
+
+    if (response?.status === 200) {
+      authStore.logout()
+      routeTo('sign-in')
+    }
+  } catch (e) {
+    console.log(e)
   }
 }
 

@@ -1,8 +1,5 @@
 import { defineStore } from 'pinia'
-import { onMounted, ref } from 'vue'
-
-import api from '../api/api'
-
+import { ref } from 'vue'
 interface AuthenticatedUser {
   id: number
   username: string
@@ -27,33 +24,19 @@ export const useAuthStore = defineStore(
     const authorization = ref<Partial<Authorization>>({})
 
     const signIn = async (payload: any) => {
-      const response = await api.post('/auth/sign-in', payload)
+      user.value = payload.user
+      authorization.value = payload.authorization
 
-      if (response.status === 200) {
-        user.value = response.data.result.user
-        authorization.value = response.data.result.authorization
-
-        localStorage.setItem('user', JSON.stringify(user.value))
-        localStorage.setItem('authorization', JSON.stringify(authorization.value))
-      }
-
-      return response
+      localStorage.setItem('user', JSON.stringify(user.value))
+      localStorage.setItem('authorization', JSON.stringify(authorization.value))
     }
 
     const logout = async () => {
-      try {
-        const response = await api.get('/auth/logout')
-        if (response.status === 200) {
-          user.value = {}
-          authorization.value = {}
+      user.value = {}
+      authorization.value = {}
 
-          localStorage.removeItem('user')
-          localStorage.removeItem('authorization')
-        }
-        return response
-      } catch (e) {
-        console.log(e)
-      }
+      localStorage.removeItem('user')
+      localStorage.removeItem('authorization')
     }
 
     return { user, authorization, signIn, logout }
